@@ -21,6 +21,7 @@
 #include "i2c.h"
 
 /* USER CODE BEGIN 0 */
+	uint8_t i2c_rx_data = 0;
 
 /* USER CODE END 0 */
 
@@ -76,11 +77,19 @@ void MX_I2C1_Init(void)
   LL_I2C_Init(I2C1, &I2C_InitStruct);
   LL_I2C_SetOwnAddress2(I2C1, 0, LL_I2C_OWNADDRESS2_NOMASK);
   /* USER CODE BEGIN I2C1_Init 2 */
-
+  LL_I2C_Enable(I2C1);
   /* USER CODE END I2C1_Init 2 */
 
 }
 
 /* USER CODE BEGIN 1 */
-
+void I2C1_EV_IRQHandler(void)
+{
+	// Check RXNE flag value in ISR register
+		if(LL_I2C_IsActiveFlag_RXNE(I2C1))
+		{
+			// Call function Master Reception Callback
+			i2c_rx_data = LL_I2C_ReceiveData8(I2C1);
+		}
+}
 /* USER CODE END 1 */
