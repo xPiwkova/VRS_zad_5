@@ -27,4 +27,10 @@
 //init function
 uint8_t lps25hb_init();
 
+uint8_t lps25hb_read_byte(uint8_t reg_address);
+void lps25hb_write_byte(uint8_t reg_address, uint8_t val);
+
+float lps25hb_get_pressure();
+float lps25hb_get_altitude(float pressure);
+
 #endif /* LPS25HB_H_ */

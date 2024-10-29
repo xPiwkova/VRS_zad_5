@@ -44,5 +44,10 @@
 
 //init function
 uint8_t HTS221_init();
+uint8_t hts221_read_byte(uint8_t reg_address);
+void hts221_write_byte(uint8_t reg_address, uint8_t val);
+
+float hts221_get_humidity();
+float hts221_get_temperature();
 
 #endif /* HTS221_H_ */
