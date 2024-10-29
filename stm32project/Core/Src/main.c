@@ -25,7 +25,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdio.h"
+#include "ctype.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +48,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+float temperature;
+float humidity;
+float pressure;
+float relative_altitude;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +79,14 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+
+  /* System interrupt init*/
+  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+  /* SysTick_IRQn interrupt configuration */
+  NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),15, 0));
 
   /* USER CODE BEGIN Init */
 
@@ -92,7 +104,13 @@ int main(void)
   MX_DMA_Init();
   MX_I2C1_Init();
   MX_USART2_UART_Init();
+
+
   /* USER CODE BEGIN 2 */
+
+  //initialize sensors
+  HTS221_init();
+  LPS25HB_init();
 
   /* USER CODE END 2 */
 
@@ -103,6 +121,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  //get values
+	 temperature = get_Temperature_hts221();
+	 humidity = get_Humidity_hts221();
+	 pressure = get_Pressure_hts221();
+
+	 //send data
+	 sendState();
+	 LL_mDelay(100);
   }
   /* USER CODE END 3 */
 }
@@ -135,18 +161,20 @@ void SystemClock_Config(void)
   {
 
   }
+  LL_Init1msTick(8000000);
   LL_SetSystemCoreClock(8000000);
-
-   /* Update the time base */
-  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
-  {
-    Error_Handler();
-  }
   LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_HSI);
 }
 
 /* USER CODE BEGIN 4 */
+void sendState() {
+    // state message
+    char message[100];
+    float load = ((float)GetBufferPosition()/DMA_USART2_BUFFER_SIZE)*100.0f;
 
+    snprintf(message, sizeof(message), "%.1f, %.0f, %.2f, %.2f\n",temperature, humidity, pressure, relative_altitude);
+    USART2_PutBuffer((uint8_t*)message, strlen(message));
+}
 /* USER CODE END 4 */
 
 /**
