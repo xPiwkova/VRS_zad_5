@@ -21,7 +21,8 @@
 #include "i2c.h"
 
 /* USER CODE BEGIN 0 */
-	uint8_t i2c_rx_data = 0;
+	uint8_t* i2c_rx_data;
+	uint8_t* buffer_data;
 
 /* USER CODE END 0 */
 
@@ -83,13 +84,82 @@ void MX_I2C1_Init(void)
 }
 
 /* USER CODE BEGIN 1 */
-void I2C1_EV_IRQHandler(void)
-{
-	// Check RXNE flag value in ISR register
-		if(LL_I2C_IsActiveFlag_RXNE(I2C1))
-		{
-			// Call function Master Reception Callback
-			i2c_rx_data = LL_I2C_ReceiveData8(I2C1);
+
+uint8_t* i2c_master_read(uint8* data, uint8_t length, uint8_t reg_addr, uint8_t slave_addr, uint8_t flag) {
+
+	buffer_data = data;
+
+	if (flag) {
+	    reg_addr |= (1 << 7);
+	}
+	//enable interrupt
+	LL_I2C_EnableIT_RX(I2C1);
+
+	//initiate transfer write
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
+
+	/*while (!LL_I2C_IsActiveFlag_TXIS(I2C1)) {
+	    // Wait until TXIS flag is set (indicates TX buffer is ready)
+	}*/
+
+	while (!LL_I2C_IsActiveFlag_STOP(I2C1)) {
+		// Wait until STOP flag is set
+		if (LL_I2C_IsActiveFlag_TXIS(I2C1)) {
+			// TX buffer is ready)
+			LL_I2C_TransmitData8(I2C1, reg_addr);
 		}
+	}
+	LL_I2C_ClearFlag_STOP(I2C1);
+
+	while (LL_I2C_IsActiveFlag_STOP(I2C1)) {
+	    // Wait for previous transmit to end
+	}
+
+	//initiate transfer read
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, length, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_READ);
+
+	while (!LL_I2C_IsActiveFlag_STOP(I2C1)) {
+		// Wait until STOP flag is set
+	}
+
+	//end of transfer
+	LL_I2C_ClearFlag_STOP(I2C1);
+
+	read_index = 0;
+
+	I2C1->ICR |= (1 << 4);
+
+	//disable interrupt
+	LL_I2C_DisableIT_RX(I2C1);
+
+	return buffer_data;
+}
+
+void i2c_master_write(uint8* value, uint8_t reg_addr, uint8_t slave_addr, uint8_t flag) {
+
+	if(flag) {
+		reg_addr |= (1 << 7);
+	}
+
+	//initiate transfer
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 2, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
+
+	LL_I2C_TransmitData8(I2C1, reg_addr);
+
+	while(!LL_I2C_IsActiveFlag_STOP(I2C1)) {
+		if(LL_I2C_IsActiveFlag_TXIS(I2C1)) {
+			LL_I2C_TransmitData8(I2C1, data);
+		}
+	}
+	LL_I2C_ClearFlag_STOP(I2C1);
+}
+
+
+void I2C1_EV_IRQHandler(void) {
+	// Check RXNE flag value in ISR register
+	if(LL_I2C_IsActiveFlag_RXNE(I2C1)) {
+		// Call function Master Reception Callback
+		i2c_rx_data[read_index++] = LL_I2C_ReceiveData8(I2C1);
+	}
 }
 /* USER CODE END 1 */
