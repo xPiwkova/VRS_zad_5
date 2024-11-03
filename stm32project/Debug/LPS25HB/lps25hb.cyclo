@@ -1,0 +1,5 @@
+../LPS25HB/lps25hb.c:12:9:LPS25HB_init	3
+../LPS25HB/lps25hb.c:41:9:lps25hb_read_byte	1
+../LPS25HB/lps25hb.c:47:6:lps25hb_write_byte	1
+../LPS25HB/lps25hb.c:52:7:lps25hb_get_pressure	1
+../LPS25HB/lps25hb.c:57:7:lps25hb_get_altitude	1

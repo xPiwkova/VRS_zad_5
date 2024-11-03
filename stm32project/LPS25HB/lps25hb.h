@@ -5,6 +5,9 @@
  *      Author: Piwkova
  */
 
+#include "main.h"
+#include "i2c.h"
+
 #ifndef LPS25HB_H_
 #define LPS25HB_H_
 
@@ -22,10 +25,10 @@
 #define LPS25HB_REG_PRESS_OUT_L 0x29
 #define LPS25HB_REG_PRESS_OUT_H 0x2A
 
-#define WHO_AM_I_VALUE 0b10111101
+#define WHO_AM_I_VALUE_LPS25HB 0b10111101
 
 //init function
-uint8_t lps25hb_init();
+uint8_t LPS25HB_init();
 
 uint8_t lps25hb_read_byte(uint8_t reg_address);
 void lps25hb_write_byte(uint8_t reg_address, uint8_t val);

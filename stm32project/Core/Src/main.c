@@ -25,6 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "lps25hb.h"
+#include "hts221.h"
 #include "stdio.h"
 #include "ctype.h"
 #include "string.h"
@@ -48,10 +50,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-float temperature;
-float humidity;
-float pressure;
-float relative_altitude;
+float temperature = 0;
+float humidity = 0;
+float pressure = 0;
+float relative_altitude = 0;
+
+void sendState();
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,7 +114,7 @@ int main(void)
 
   //initialize sensors
   HTS221_init();
-  LPS25HB_init();
+  //LPS25HB_init();
 
   /* USER CODE END 2 */
 
@@ -121,10 +125,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //get values
-	 temperature = get_Temperature_hts221();
-	 humidity = get_Humidity_hts221();
-	 pressure = get_Pressure_hts221();
+
+	 // get values
+	 temperature = hts221_get_temperature();
+	 humidity = hts221_get_humidity();
+	 //pressure = lps25hb_get_pressure();
 
 	 //send data
 	 sendState();
@@ -170,9 +175,8 @@ void SystemClock_Config(void)
 void sendState() {
     // state message
     char message[100];
-    float load = ((float)GetBufferPosition()/DMA_USART2_BUFFER_SIZE)*100.0f;
 
-    snprintf(message, sizeof(message), "%.1f, %.0f, %.2f, %.2f\n",temperature, humidity, pressure, relative_altitude);
+    snprintf(message, sizeof(message), "%.1f, %.0f, %.2f, %.2f\r\n",temperature, humidity, pressure, relative_altitude);
     USART2_PutBuffer((uint8_t*)message, strlen(message));
 }
 /* USER CODE END 4 */

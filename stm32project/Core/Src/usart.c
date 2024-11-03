@@ -21,7 +21,18 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+/* Declaration and initialization of callback function */
+static void (* USART2_ProcessData)(uint8_t* data, uint16_t len) = 0;
 
+/* Register callback */
+void USART2_RegisterCallback(void *callback)
+{
+	if(callback != 0)
+	{
+		USART2_ProcessData = callback;
+	}
+}
+static uint16_t old_pos = 0;
 /* USER CODE END 0 */
 
 /* USART2 init function */
@@ -132,5 +143,52 @@ void USART2_PutBuffer(uint8_t *buffer, uint8_t length)
 	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
 
 	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
+}
+
+void USART2_CheckDmaReception(void) {
+
+	if(USART2_ProcessData == 0) return;
+
+
+	uint16_t pos = DMA_USART2_BUFFER_SIZE - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+
+
+	if (pos >= DMA_USART2_BUFFER_SIZE - 20)
+	{
+		  USART2_ProcessData(&bufferUSART2dma[old_pos], pos - old_pos);
+
+	  pos = 0;
+	  old_pos = 0;
+	  return;
+	}
+
+	if (pos != old_pos)
+	{
+		if (pos > old_pos)
+		{
+			USART2_ProcessData(&bufferUSART2dma[old_pos], pos - old_pos);
+		}
+		else
+		{
+			USART2_ProcessData(&bufferUSART2dma[old_pos], DMA_USART2_BUFFER_SIZE - old_pos);
+
+			if (pos > 0)
+			{
+				USART2_ProcessData(&bufferUSART2dma[0], pos);
+			}
+		}
+	}
+
+	old_pos = pos;
+
+	if (old_pos == DMA_USART2_BUFFER_SIZE)
+	{
+		old_pos = 0;
+	}
+}
+
+int GetBufferPosition()
+{
+	return (int)old_pos;
 }
 /* USER CODE END 1 */
