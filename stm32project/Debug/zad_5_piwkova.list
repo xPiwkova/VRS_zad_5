@@ -7340,7 +7340,7 @@ float lps25hb_get_altitude(float pressure) {
 	//to do
 	float alt;
 
-	alt = 4330 * (1 - pow(pressure/1013.25, 1/5.255));
+	alt = 44330 * (1 - pow(pressure/1013.25, 1/5.255));
  800315a:	6878      	ldr	r0, [r7, #4]
  800315c:	f7fd f9f4 	bl	8000548 <__aeabi_f2d>
  8003160:	a31e      	add	r3, pc, #120	@ (adr r3, 80031dc <lps25hb_get_altitude+0x8c>)
@@ -7385,7 +7385,7 @@ float lps25hb_get_altitude(float pressure) {
  80031c8:	ccd9456c 	.word	0xccd9456c
  80031cc:	3fc85b95 	.word	0x3fc85b95
  80031d0:	00000000 	.word	0x00000000
- 80031d4:	40b0ea00 	.word	0x40b0ea00
+ 80031d4:	40e5a540 	.word	0x40e5a540
  80031d8:	3ff00000 	.word	0x3ff00000
  80031dc:	00000000 	.word	0x00000000
  80031e0:	408faa00 	.word	0x408faa00

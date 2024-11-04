@@ -69,7 +69,7 @@ float lps25hb_get_altitude(float pressure) {
 	//to do
 	float alt;
 
-	alt = 4330 * (1 - pow(pressure/1013.25, 1/5.255));
+	alt = 44330 * (1 - pow(pressure/1013.25, 1/5.255));
 
 	return alt;
 }
