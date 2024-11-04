@@ -42,7 +42,7 @@ float hts221_get_temperature() {
 	uint8_t t1_x8 = hts221_read_byte(T1_degC_x8);
     uint16_t t1_out = (hts221_read_byte(T1_OUT_1) << 8) | hts221_read_byte(T1_OUT_2);
 
-    uint16_t t_out = (hts221_read_byte(HTS221_TEMP_OUT_L) << 8) | hts221_read_byte(HTS221_TEMP_OUT_H);
+    uint16_t t_out = hts221_read_byte(HTS221_TEMP_OUT_L) | (hts221_read_byte(HTS221_TEMP_OUT_H) << 8);
 
     float T0_degC = (float) (t0_x8+(1 << 6)*(msb & 0x03))/8.0;
     float T1_degC = (float) (t1_x8+(1 << 6)*(msb & 0x0C))/8.0;
@@ -59,12 +59,12 @@ float hts221_get_humidity() {
 	float hum;
 
     uint8_t h0_x2 = hts221_read_byte(H0_rH_x2);
-    uint16_t h0_t0_out = (hts221_read_byte(H0_OUT_1) << 8) | hts221_read_byte(H0_OUT_2);
+    uint16_t h0_t0_out = (hts221_read_byte(H0_OUT_1) ) | (hts221_read_byte(H0_OUT_2 )<<8);
 
     uint8_t h1_x2 = hts221_read_byte(H1_rH_x2);
-    uint16_t h1_t0_out = (hts221_read_byte(H1_OUT_1) << 8) | hts221_read_byte(H1_OUT_2);
+    uint16_t h1_t0_out = (hts221_read_byte(H1_OUT_1) ) | (hts221_read_byte(H1_OUT_2)<<8);
 
-    uint16_t h_out = (hts221_read_byte(HTS221_HUM_OUT_L) << 8) | hts221_read_byte(HTS221_HUM_OUT_H);
+    uint16_t h_out = (hts221_read_byte(HTS221_HUM_OUT_L) ) | (hts221_read_byte(HTS221_HUM_OUT_H) <<8);
 
     float h0_rh = (float) h0_x2/2.0;
     float h1_rh = (float) h1_x2/2.0;

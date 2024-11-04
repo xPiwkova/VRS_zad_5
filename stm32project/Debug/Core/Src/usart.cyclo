@@ -8,7 +8,6 @@
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:820:22:LL_DMA_SetMemorySize	1
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:868:22:LL_DMA_SetChannelPriorityLevel	1
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:915:22:LL_DMA_SetDataLength	1
-../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:937:26:LL_DMA_GetDataLength	1
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:966:22:LL_DMA_ConfigAddresses	2
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:1000:22:LL_DMA_SetMemoryAddress	1
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_ll_dma.h:1022:22:LL_DMA_SetPeriphAddress	1
@@ -26,5 +25,4 @@
 ../Core/Src/usart.c:28:6:USART2_RegisterCallback	2
 ../Core/Src/usart.c:40:6:MX_USART2_UART_Init	1
 ../Core/Src/usart.c:137:6:USART2_PutBuffer	1
-../Core/Src/usart.c:148:6:USART2_CheckDmaReception	7
 ../Core/Src/usart.c:190:5:GetBufferPosition	1

@@ -145,7 +145,7 @@ void USART2_PutBuffer(uint8_t *buffer, uint8_t length)
 	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
 }
 
-void USART2_CheckDmaReception(void) {
+/*void USART2_CheckDmaReception(void) {
 
 	if(USART2_ProcessData == 0) return;
 
@@ -186,7 +186,7 @@ void USART2_CheckDmaReception(void) {
 		old_pos = 0;
 	}
 }
-
+*/
 int GetBufferPosition()
 {
 	return (int)old_pos;

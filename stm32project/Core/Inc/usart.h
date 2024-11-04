@@ -39,7 +39,7 @@ static uint8_t bufferUSART2dma[DMA_USART2_BUFFER_SIZE];
 
 void MX_USART2_UART_Init(void);
 void USART2_PutBuffer(uint8_t *buffer, uint8_t length);
-void USART2_CheckDmaReception(void);
+//void USART2_CheckDmaReception(void);
 void USART2_RegisterCallback(void *callback);
 /* USER CODE END Private defines */
 

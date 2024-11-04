@@ -23,6 +23,7 @@ uint8_t LPS25HB_init(){
 		lps25hb_write_byte(LPS25HB_CTRL_REG1, ctrl_reg1);
 		status = 1;
 	} else {
+		// second address
 		adress = LPS25HB_I2C_ADDRESS_1;
 		val = lps25hb_read_byte(LPS25HB_WHO_AM_I);
 		if (val == WHO_AM_I_VALUE_LPS25HB) {
@@ -38,23 +39,37 @@ uint8_t LPS25HB_init(){
 	return status;
 }
 
-uint8_t lps25hb_read_byte(uint8_t reg_address) {
+uint8_t lps25hb_read_byte(uint8_t reg_addr) {
 	uint8_t val = 0;
-	//i2c_master_read(&val, 1, reg_address, adress);
+	i2c_master_read(&val, 1, reg_addr, adress);
 	return val;
 }
 
-void lps25hb_write_byte(uint8_t reg_address, uint8_t val) {
-	i2c_master_write(val, reg_address, adress);
+void lps25hb_write_byte(uint8_t reg_addr, uint8_t val) {
+	i2c_master_write(val, reg_addr, adress);
 }
 
 //read pressure
 float lps25hb_get_pressure() {
-	//to do
-	return 0.0;
+
+	float press;
+
+	uint8_t xl = lps25hb_read_byte(LPS25HB_PRESS_OUT_XL);
+	uint8_t l = lps25hb_read_byte(LPS25HB_PRESS_OUT_L);
+	uint8_t h = lps25hb_read_byte(LPS25HB_PRESS_OUT_H);
+
+	//calculate pressure
+	press = ((float) ( xl | (l << 8) | (h << 16))) / 4096.0;
+
+	return press;
 }
 
+//calculate altitude
 float lps25hb_get_altitude(float pressure) {
 	//to do
-	return 0.0;
+	float alt;
+
+	alt = 4330 * (1 - pow(pressure/1013.25, 1/5.255));
+
+	return alt;
 }

@@ -30,6 +30,7 @@
 #include "stdio.h"
 #include "ctype.h"
 #include "string.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -114,14 +115,13 @@ int main(void)
 
   //initialize sensors
   HTS221_init();
-  //LPS25HB_init();
+  LPS25HB_init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+  while (1) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -129,7 +129,8 @@ int main(void)
 	 // get values
 	 temperature = hts221_get_temperature();
 	 humidity = hts221_get_humidity();
-	 //pressure = lps25hb_get_pressure();
+	 pressure = lps25hb_get_pressure();
+	 relative_altitude = lps25hb_get_altitude(pressure);
 
 	 //send data
 	 sendState();
@@ -177,7 +178,15 @@ void sendState() {
     char message[100];
 
     snprintf(message, sizeof(message), "%.1f, %.0f, %.2f, %.2f\r\n",temperature, humidity, pressure, relative_altitude);
-    USART2_PutBuffer((uint8_t*)message, strlen(message));
+    message[sizeof(message) - 1] = '\0';
+    for (int i = 0; message[i] != '\0'; i++) {
+            // Wait until USART buffer is empty before transmitting
+            while (!(USART2->ISR & USART_ISR_TXE));
+
+            // Transmit the character
+            USART2->TDR = message[i];
+        }
+    //USART2_PutBuffer((uint8_t*)message, strlen(message));
 }
 /* USER CODE END 4 */
 
