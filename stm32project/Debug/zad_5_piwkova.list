@@ -39,15 +39,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  00017bf7  00000000  00000000  0001215c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00008186  00000000  00000000  00029d53  2**0
+ 18 .debug_line   00008180  00000000  00000000  00029d53  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    00078097  00000000  00000000  00031ed9  2**0
+ 19 .debug_str    00078097  00000000  00000000  00031ed3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  000a9f70  2**0
+ 20 .comment      00000043  00000000  00000000  000a9f6a  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003560  00000000  00000000  000a9fb4  2**2
+ 21 .debug_frame  00003560  00000000  00000000  000a9fb0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 00000066  00000000  00000000  000ad514  2**0
+ 22 .debug_line_str 00000066  00000000  00000000  000ad510  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -6922,15 +6922,15 @@ float hts221_get_temperature() {
  8002e2a:	f7ff ffe2 	bl	8002df2 <hts221_read_byte>
  8002e2e:	4603      	mov	r3, r0
  8002e30:	75bb      	strb	r3, [r7, #22]
-	uint16_t t0_out = (hts221_read_byte(T0_OUT_1) << 8) | hts221_read_byte(T0_OUT_2);
+	uint16_t t0_out = hts221_read_byte(T0_OUT_1) | (hts221_read_byte(T0_OUT_2) << 8);
  8002e32:	203c      	movs	r0, #60	@ 0x3c
  8002e34:	f7ff ffdd 	bl	8002df2 <hts221_read_byte>
  8002e38:	4603      	mov	r3, r0
- 8002e3a:	021b      	lsls	r3, r3, #8
- 8002e3c:	b21c      	sxth	r4, r3
- 8002e3e:	203d      	movs	r0, #61	@ 0x3d
- 8002e40:	f7ff ffd7 	bl	8002df2 <hts221_read_byte>
- 8002e44:	4603      	mov	r3, r0
+ 8002e3a:	b21c      	sxth	r4, r3
+ 8002e3c:	203d      	movs	r0, #61	@ 0x3d
+ 8002e3e:	f7ff ffd8 	bl	8002df2 <hts221_read_byte>
+ 8002e42:	4603      	mov	r3, r0
+ 8002e44:	021b      	lsls	r3, r3, #8
  8002e46:	b21b      	sxth	r3, r3
  8002e48:	4323      	orrs	r3, r4
  8002e4a:	b21b      	sxth	r3, r3
@@ -6941,15 +6941,15 @@ float hts221_get_temperature() {
  8002e50:	f7ff ffcf 	bl	8002df2 <hts221_read_byte>
  8002e54:	4603      	mov	r3, r0
  8002e56:	74fb      	strb	r3, [r7, #19]
-    uint16_t t1_out = (hts221_read_byte(T1_OUT_1) << 8) | hts221_read_byte(T1_OUT_2);
+    uint16_t t1_out = hts221_read_byte(T1_OUT_1) | ((hts221_read_byte(T1_OUT_2) << 8));
  8002e58:	203e      	movs	r0, #62	@ 0x3e
  8002e5a:	f7ff ffca 	bl	8002df2 <hts221_read_byte>
  8002e5e:	4603      	mov	r3, r0
- 8002e60:	021b      	lsls	r3, r3, #8
- 8002e62:	b21c      	sxth	r4, r3
- 8002e64:	203f      	movs	r0, #63	@ 0x3f
- 8002e66:	f7ff ffc4 	bl	8002df2 <hts221_read_byte>
- 8002e6a:	4603      	mov	r3, r0
+ 8002e60:	b21c      	sxth	r4, r3
+ 8002e62:	203f      	movs	r0, #63	@ 0x3f
+ 8002e64:	f7ff ffc5 	bl	8002df2 <hts221_read_byte>
+ 8002e68:	4603      	mov	r3, r0
+ 8002e6a:	021b      	lsls	r3, r3, #8
  8002e6c:	b21b      	sxth	r3, r3
  8002e6e:	4323      	orrs	r3, r4
  8002e70:	b21b      	sxth	r3, r3

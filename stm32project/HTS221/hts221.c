@@ -37,10 +37,10 @@ float hts221_get_temperature() {
 	uint8_t msb = hts221_read_byte(MSB);
 
 	uint8_t t0_x8 = hts221_read_byte(T0_degC_x8);
-	uint16_t t0_out = (hts221_read_byte(T0_OUT_1) << 8) | hts221_read_byte(T0_OUT_2);
+	uint16_t t0_out = hts221_read_byte(T0_OUT_1) | (hts221_read_byte(T0_OUT_2) << 8);
 
 	uint8_t t1_x8 = hts221_read_byte(T1_degC_x8);
-    uint16_t t1_out = (hts221_read_byte(T1_OUT_1) << 8) | hts221_read_byte(T1_OUT_2);
+    uint16_t t1_out = hts221_read_byte(T1_OUT_1) | ((hts221_read_byte(T1_OUT_2) << 8));
 
     uint16_t t_out = hts221_read_byte(HTS221_TEMP_OUT_L) | (hts221_read_byte(HTS221_TEMP_OUT_H) << 8);
 
